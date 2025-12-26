@@ -47,51 +47,166 @@ document.querySelectorAll('.nav-link').forEach(link => {
 });
 
 function renderAll() {
-    renderOverview();
+    renderAnalytics();
     renderPlayers();
     renderMatches();
     renderCalendar();
     renderTactics();
 }
 
-// 4.1. Обзор
-function renderOverview() {
-    const container = document.getElementById('overview-stats');
-    if(!container) return;
-    const totalP = players.length;
-    const unavailable = players.filter(p => p.status !== 'Здоров');
-    const healthy = totalP - unavailable.length;
-    let sickHTML = unavailable.length ? `<ul class="sick-list">${unavailable.map(p=>`<li><span>${p.name}</span><span class="mini-badge ${p.status==='Травма'?'status-bad':'status-warn'}">${p.status}</span></li>`).join('')}</ul>` : '<p style="color:#888;font-size:0.9rem;">Лазарет пуст.</p>';
+// 4.1. АНАЛИТИКА - ФИНАЛЬНАЯ ВЕРСИЯ С УЛУЧШЕННЫМ ДИЗАЙНОМ
+function renderAnalytics() {
+    const container = document.getElementById('analytics-dashboard-container');
+    if (!container) return;
 
+    // --- 1. Сбор и подготовка данных ---
     let allM = [];
-    Object.values(events).forEach(arr => allM.push(...arr.filter(e => e.type === 'match')));
-    allM.sort((a,b) => new Date(b.date+'T'+b.time) - new Date(a.date+'T'+a.time));
+    Object.values(events).forEach(arr => allM.push(...arr.filter(e => e.type === 'match' && e.homeScore !== null && e.awayScore !== null)));
+    allM.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time)); // Сортируем от старых к новым
+    const totalMatches = allM.length;
+
+    if (totalMatches === 0) {
+        container.innerHTML = '<div class="stat-card empty-state"><p>Нет сыгранных матчей для анализа. Добавьте первый матч в календаре!</p></div>';
+        return;
+    }
 
     const wins = allM.filter(m => m.homeScore > m.awayScore).length;
     const draws = allM.filter(m => m.homeScore == m.awayScore).length;
     const losses = allM.filter(m => m.homeScore < m.awayScore).length;
-    const gs = allM.reduce((a,b)=>a+b.homeScore,0);
-    const gc = allM.reduce((a,b)=>a+b.awayScore,0);
+    const winRate = totalMatches > 0 ? ((wins / totalMatches) * 100).toFixed(0) : 0;
+    const gs = allM.reduce((a, b) => a + (b.homeScore || 0), 0);
+    const gc = allM.reduce((a, b) => a + (b.awayScore || 0), 0);
     const diff = gs - gc;
 
-    const today = new Date(); today.setHours(0,0,0,0);
-    let fut = [];
-    Object.keys(events).forEach(d => { if(new Date(d)>=today) events[d].forEach(e=>{if(e.type==='match') fut.push({...e, date:d})})});
-    fut.sort((a,b)=>new Date(a.date)-new Date(b.date));
-    const next = fut[0];
-    let nextHTML = next ? `<div class="next-match-card"><div class="nm-header">Следующий матч</div><div class="nm-vs"><div class="nm-team">Мы</div><div class="nm-vs-text">VS</div><div class="nm-team opponent">${next.opponent}</div></div><div class="nm-date">${new Date(next.date).toLocaleDateString()}</div></div>` : `<div class="next-match-card empty"><p>Нет матчей</p></div>`;
+    // --- 2. Генерация SVG для линейного графика с заливкой ---
+    function generateLineChartSVG(matches) {
+        const lastMatches = matches.slice(-7); // Берем последние 7
+        if (lastMatches.length < 2) return '<p class="no-data">Нужно минимум 2 матча для графика</p>';
 
-    const last5 = allM.slice(0, 5); 
-    let formHTML = '<div class="form-dots">';
-    last5.forEach(m => {
-        let c = 'dot-draw';
-        if(m.homeScore > m.awayScore) c = 'dot-win';
-        if(m.homeScore < m.awayScore) c = 'dot-loss';
-        formHTML += `<div class="${c}" title="${m.opponent}"></div>`;
-    });
-    formHTML += '</div>';
+        const width = 300, height = 120, padding = 20;
+        const points = lastMatches.map((m, i) => {
+            const x = (width - 2 * padding) / (lastMatches.length - 1) * i + padding;
+            let y;
+            if (m.homeScore > m.awayScore) y = padding; // Победа (вверху)
+            else if (m.homeScore < m.awayScore) y = height - padding; // Поражение (внизу)
+            else y = height / 2; // Ничья (посередине)
+            return { x, y, match: m };
+        });
 
-    container.innerHTML = `<div class="stat-card span-2">${nextHTML}</div><div class="stat-card"><h3>Состав</h3><div class="health-summary"><span class="big-num ${healthy==totalP?'good':'warn'}">${healthy}/${totalP}</span></div>${sickHTML}</div><div class="stat-card"><h3>Сезон</h3><div class="season-stats-row"><span class="sb-val good">${wins}</span><span class="sb-val gray">${draws}</span><span class="sb-val bad">${losses}</span></div><div style="margin-top:15px;text-align:center;">${formHTML}</div></div><div class="stat-card"><h3>Голы</h3><div class="goals-chart"><div class="goal-row"><span>З</span><div class="progress-bg"><div class="progress-fill p-green" style="width:${Math.min(100,(gs/(gs+gc||1))*100)}%"></div></div><span class="g-val">${gs}</span></div><div class="goal-row"><span>П</span><div class="progress-bg"><div class="progress-fill p-red" style="width:${Math.min(100,(gc/(gs+gc||1))*100)}%"></div></div><span class="g-val">${gc}</span></div></div><div class="goal-diff">Разница: <span class="${diff>=0?'good-text':'bad-text'}">${diff>0?'+':''}${diff}</span></div></div>`;
+        const pathD = "M" + points.map(p => `${p.x} ${p.y}`).join(" L ");
+        const areaD = `${pathD} V ${height} L ${padding} ${height} Z`;
+        
+        return `
+            <svg class="line-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="var(--primary-blue)" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="var(--primary-blue)" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+                
+                <!-- Заливка под графиком -->
+                <path class="line-chart-area" d="${areaD}" />
+
+                <!-- Горизонтальные линии для контекста -->
+                <line class="line-chart-gridline" x1="${padding}" y1="${padding}" x2="${width-padding}" y2="${padding}"></line>
+                <line class="line-chart-gridline" x1="${padding}" y1="${height/2}" x2="${width-padding}" y2="${height/2}"></line>
+                <line class="line-chart-gridline" x1="${padding}" y1="${height-padding}" x2="${width-padding}" y2="${height-padding}"></line>
+                
+                <!-- Линия графика -->
+                <path class="line-chart-path" d="${pathD}" />
+                
+                <!-- Точки на графике -->
+                ${points.map(p => {
+                    let resultClass = 'point-draw';
+                    if (p.y === padding) resultClass = 'point-win';
+                    if (p.y === height-padding) resultClass = 'point-loss';
+                    return `<circle class="line-chart-point ${resultClass}" cx="${p.x}" cy="${p.y}" r="4">
+                                <title>${new Date(p.match.date).toLocaleDateString()}: ${p.match.opponent} (${p.match.homeScore}:${p.match.awayScore})</title>
+                            </circle>`;
+                }).join('')}
+            </svg>
+        `;
+    }
+
+    const lineChartHTML = generateLineChartSVG(allM);
+
+    // --- 3. Круговой график ---
+    const winPercent = totalMatches > 0 ? (wins / totalMatches) * 100 : 0;
+    const drawPercent = totalMatches > 0 ? (draws / totalMatches) * 100 : 0;
+    const conicGradient = `conic-gradient(var(--success-green) 0% ${winPercent}%, var(--warning-orange) ${winPercent}% ${winPercent + drawPercent}%, var(--danger-red) ${winPercent + drawPercent}% 100%)`;
+
+    // --- 4. Лучшие бомбардиры ---
+    const scorers = {};
+    allM.forEach(m => { if(m.details && m.details.goals) m.details.goals.forEach(id => { scorers[id] = (scorers[id] || 0) + 1; }); });
+    const sortedScorers = Object.entries(scorers).sort((a,b) => b[1] - a[1]).slice(0,3);
+    let scorersHTML = '';
+    if (sortedScorers.length > 0) {
+        scorersHTML = '<ul>';
+        sortedScorers.forEach(([id, goals]) => {
+            const player = players.find(p => p.id == id);
+            if (player) scorersHTML += `<li><span>${player.name}</span><span class="scorer-goals">${goals} ⚽</span></li>`;
+        });
+        scorersHTML += '</ul>';
+    } else {
+        scorersHTML = '<p class="no-data">Нет данных</p>';
+    }
+
+    // --- 5. Генерация финального HTML ---
+    container.innerHTML = `
+        <div class="analytics-grid">
+            <div class="stat-card">
+                <div class="card-header"><span class="card-icon">📊</span><h3>Сводка</h3></div>
+                <div class="card-body">
+                    <div class="kpi-container">
+                        <div class="kpi-item" title="Всего сыграно матчей"><span class="kpi-value">${totalMatches}</span><span class="kpi-label">Матчей</span></div>
+                        <div class="kpi-item" title="Победы"><span class="kpi-value kpi-value-gradient-green">${wins}</span><span class="kpi-label">Побед</span></div>
+                        <div class="kpi-item" title="Ничьи"><span class="kpi-value kpi-value-gradient-orange">${draws}</span><span class="kpi-label">Ничьих</span></div>
+                        <div class="kpi-item" title="Поражения"><span class="kpi-value kpi-value-gradient-red">${losses}</span><span class="kpi-label">Поражений</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-header"><span class="card-icon">🏆</span><h3>Результаты</h3></div>
+                <div class="card-body chart-container donut-chart-container">
+                    <div class="donut-chart" style="background: ${conicGradient};">
+                        <div class="donut-center"><span>${winRate}%</span><small>Побед</small></div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><span class="legend-dot dot-win"></span>Победы (${wins})</div>
+                        <div class="legend-item"><span class="legend-dot dot-draw"></span>Ничьи (${draws})</div>
+                        <div class="legend-item"><span class="legend-dot dot-loss"></span>Поражения (${losses})</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card large-card">
+                <div class="card-header"><span class="card-icon">📈</span><h3>Форма команды</h3></div>
+                <div class="card-body chart-container line-chart-container">
+                    ${lineChartHTML}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-header"><span class="card-icon">⚽</span><h3>Бомбардиры</h3></div>
+                <div class="card-body">
+                    <div class="scorers-list">${scorersHTML}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-header"><span class="card-icon">🥅</span><h3>Статистика голов</h3></div>
+                <div class="card-body">
+                    <div class="goals-chart">
+                        <div class="goal-row"><span>Забито</span><div class="progress-bg"><div class="progress-fill p-green" style="width:${(gs/(gs+gc||1))*100}%"></div></div><span class="g-val">${gs}</span></div>
+                        <div class="goal-row"><span>Пропущено</span><div class="progress-bg"><div class="progress-fill p-red" style="width:${(gc/(gs+gc||1))*100}%"></div></div><span class="g-val">${gc}</span></div>
+                    </div>
+                    <div class="goal-diff">Разница: <span class="${diff>=0?'good-text':'bad-text'}">${diff>0?'+':''}${diff}</span></div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 // 4.2. Игроки
@@ -101,7 +216,44 @@ function renderPlayers() {
     Object.values(events).forEach(day => day.forEach(ev => { if(ev.type==='match' && ev.details) { if(ev.details.goals) ev.details.goals.forEach(id => {if(stats[id]) stats[id].g++}); if(ev.details.yellow) ev.details.yellow.forEach(id => {if(stats[id]) stats[id].y++}); if(ev.details.red) ev.details.red.forEach(id => {if(stats[id]) stats[id].r++}); } }));
     const list = document.getElementById('players-list-container');
     if(!list) return;
-    list.innerHTML = `<table><thead><tr><th>ФИО</th><th>Поз</th><th class="col-center">⚽</th><th class="col-center">🟨</th><th class="col-center">🟥</th><th>Статус</th><th></th></tr></thead><tbody>${players.map(p => `<tr><td>${p.name}</td><td>${p.pos}</td><td class="col-center stat-val">${stats[p.id].g}</td><td class="col-center stat-val" style="color:orange">${stats[p.id].y}</td><td class="col-center stat-val" style="color:red">${stats[p.id].r}</td><td class="status-${p.status.split(' ')[0]}">${p.status}</td><td><button onclick="editPlayer(${p.id})">✏️</button><button onclick="deletePlayer(${p.id})" style="color:red">✕</button></td></tr>`).join('')}</tbody></table>`;
+    const tableRowsHTML = players.map(p => `
+        <tr>
+            <td>${p.name}</td>
+            <td>${p.pos}</td>
+            <td class="col-center stat-val">${stats[p.id].g}</td>
+            <td class="col-center stat-val" style="color:orange">${stats[p.id].y}</td>
+            <td class="col-center stat-val" style="color:red">${stats[p.id].r}</td>
+            <td>
+                <div class="status-wrapper">
+                    <span class="status-${p.status.split(' ')[0]}">${p.status}</span>
+                </div>
+            </td>
+            <td>
+                <div class="action-buttons-wrapper">
+                    <button onclick="editPlayer(${p.id})" title="Редактировать">✏️</button>
+                    <button class="delete-btn" onclick="deletePlayer(${p.id})" title="Удалить">✕</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    list.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Поз</th>
+                    <th class="col-center">⚽</th>
+                    <th class="col-center">🟨</th>
+                    <th class="col-center">🟥</th>
+                    <th class="col-center">Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableRowsHTML}
+            </tbody>
+        </table>
+    `;
 }
 
 // 4.3. Матчи
@@ -193,107 +345,16 @@ function renderTactics() {
     }
 }
 
-function createChip(p, pos) {
-    const chip = document.createElement('div');
-    chip.className = 'player-chip';
-    chip.setAttribute('data-type', 'player');
-    chip.setAttribute('data-id', p.id);
-    chip.innerText = p.name.substring(0, 2).toUpperCase();
-    chip.onmousedown = dragStart; chip.ontouchstart = dragStart;
-    if (pos.onField) {
-        chip.setAttribute('data-name', p.name);
-        chip.style.left = pos.x + '%';
-        chip.style.top = pos.y + '%';
-    }
-    return chip;
-}
-
+function createChip(p, pos) { const chip = document.createElement('div'); chip.className = 'player-chip'; chip.setAttribute('data-type', 'player'); chip.setAttribute('data-id', p.id); chip.innerText = p.name.substring(0, 2).toUpperCase(); chip.onmousedown = dragStart; chip.ontouchstart = dragStart; if (pos.onField) { chip.setAttribute('data-name', p.name); chip.style.left = pos.x + '%'; chip.style.top = pos.y + '%'; } return chip; }
 let activeChip = null;
 let shiftX = 0, shiftY = 0;
-
-function dragStart(e) {
-    e.preventDefault();
-    const evt = e.type === 'touchstart' ? e.touches[0] : e;
-    activeChip = e.target;
-    const rect = activeChip.getBoundingClientRect();
-    shiftX = evt.clientX - rect.left;
-    shiftY = evt.clientY - rect.top;
-    activeChip.style.position = 'fixed';
-    activeChip.style.zIndex = 1000;
-    moveAt(evt.clientX, evt.clientY);
-    document.addEventListener('mouseup', dragEnd);
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('touchend', dragEnd);
-    document.addEventListener('touchmove', dragMove, {passive:false});
-}
-
-function moveAt(pageX, pageY) {
-    if (!activeChip) return;
-    activeChip.style.left = pageX - shiftX + 'px';
-    activeChip.style.top = pageY - shiftY + 'px';
-}
-
-function dragMove(e) {
-    if (!activeChip) return;
-    e.preventDefault();
-    const evt = e.type === 'touchmove' ? e.touches[0] : e;
-    moveAt(evt.clientX, evt.clientY);
-}
-
-function dragEnd(e) {
-    if (!activeChip) return;
-    document.removeEventListener('mouseup', dragEnd);
-    document.removeEventListener('mousemove', dragMove);
-    document.removeEventListener('touchend', dragEnd);
-    document.removeEventListener('touchmove', dragMove);
-
-    const evt = e.type === 'touchend' ? e.changedTouches[0] : e;
-    const field = document.getElementById('football-field');
-    const fRect = field.getBoundingClientRect();
-    const realChipLeft = evt.clientX - shiftX;
-    const realChipTop = evt.clientY - shiftY;
-    const chipCenterX = realChipLeft + (activeChip.offsetWidth / 2);
-    const chipCenterY = realChipTop + (activeChip.offsetHeight / 2);
-    const inside = (chipCenterX >= fRect.left && chipCenterX <= fRect.right && chipCenterY >= fRect.top && chipCenterY <= fRect.bottom);
-
-    activeChip.style.position = ''; activeChip.style.zIndex = '';
-    const type = activeChip.getAttribute('data-type');
-
-    if (inside) {
-        let px = ((realChipLeft - fRect.left) / fRect.width) * 100;
-        let py = ((realChipTop - fRect.top) / fRect.height) * 100;
-        px = Math.max(0, Math.min(100, px));
-        py = Math.max(0, Math.min(100, py));
-        if (type === 'player') {
-            const pid = activeChip.getAttribute('data-id');
-            tacticsData.players[pid] = { onField: true, x: px, y: py };
-        } else if (type === 'opponent') {
-            const idx = activeChip.getAttribute('data-idx');
-            tacticsData.opponents[idx] = { id: tacticsData.opponents[idx].id, x: px, y: py };
-        }
-    } else {
-        if (type === 'player') {
-            const pid = activeChip.getAttribute('data-id');
-            tacticsData.players[pid] = { onField: false, x: 0, y: 0 };
-        } else if (type === 'opponent') {
-            const idx = activeChip.getAttribute('data-idx');
-            removeOpponent(idx);
-            activeChip = null;
-            return;
-        }
-    }
-    saveTactics(); renderTactics(); activeChip = null;
-}
-
-document.getElementById('add-opponent-btn').onclick = () => {
-    if(!tacticsData.opponents) tacticsData.opponents = [];
-    tacticsData.opponents.push({ id: tacticsData.opponents.length + 1, x: 50, y: 50 });
-    saveTactics(); renderTactics();
-};
+function dragStart(e) { e.preventDefault(); const evt = e.type === 'touchstart' ? e.touches[0] : e; activeChip = e.target; const rect = activeChip.getBoundingClientRect(); shiftX = evt.clientX - rect.left; shiftY = evt.clientY - rect.top; activeChip.style.position = 'fixed'; activeChip.style.zIndex = 1000; moveAt(evt.clientX, evt.clientY); document.addEventListener('mouseup', dragEnd); document.addEventListener('mousemove', dragMove); document.addEventListener('touchend', dragEnd); document.addEventListener('touchmove', dragMove, {passive:false}); }
+function moveAt(pageX, pageY) { if (!activeChip) return; activeChip.style.left = pageX - shiftX + 'px'; activeChip.style.top = pageY - shiftY + 'px'; }
+function dragMove(e) { if (!activeChip) return; e.preventDefault(); const evt = e.type === 'touchmove' ? e.touches[0] : e; moveAt(evt.clientX, evt.clientY); }
+function dragEnd(e) { if (!activeChip) return; document.removeEventListener('mouseup', dragEnd); document.removeEventListener('mousemove', dragMove); document.removeEventListener('touchend', dragEnd); document.removeEventListener('touchmove', dragMove); const evt = e.type === 'touchend' ? e.changedTouches[0] : e; const field = document.getElementById('football-field'); const fRect = field.getBoundingClientRect(); const realChipLeft = evt.clientX - shiftX; const realChipTop = evt.clientY - shiftY; const chipCenterX = realChipLeft + (activeChip.offsetWidth / 2); const chipCenterY = realChipTop + (activeChip.offsetHeight / 2); const inside = (chipCenterX >= fRect.left && chipCenterX <= fRect.right && chipCenterY >= fRect.top && chipCenterY <= fRect.bottom); activeChip.style.position = ''; activeChip.style.zIndex = ''; const type = activeChip.getAttribute('data-type'); if (inside) { let px = ((realChipLeft - fRect.left) / fRect.width) * 100; let py = ((realChipTop - fRect.top) / fRect.height) * 100; px = Math.max(0, Math.min(100, px)); py = Math.max(0, Math.min(100, py)); if (type === 'player') { const pid = activeChip.getAttribute('data-id'); tacticsData.players[pid] = { onField: true, x: px, y: py }; } else if (type === 'opponent') { const idx = activeChip.getAttribute('data-idx'); tacticsData.opponents[idx] = { id: tacticsData.opponents[idx].id, x: px, y: py }; } } else { if (type === 'player') { const pid = activeChip.getAttribute('data-id'); tacticsData.players[pid] = { onField: false, x: 0, y: 0 }; } else if (type === 'opponent') { const idx = activeChip.getAttribute('data-idx'); removeOpponent(idx); activeChip = null; return; } } saveTactics(); renderTactics(); activeChip = null; }
+document.getElementById('add-opponent-btn').onclick = () => { if(!tacticsData.opponents) tacticsData.opponents = []; tacticsData.opponents.push({ id: tacticsData.opponents.length + 1, x: 50, y: 50 }); saveTactics(); renderTactics(); };
 function removeOpponent(idx) { tacticsData.opponents.splice(idx, 1); saveTactics(); renderTactics(); }
 document.getElementById('reset-tactics-btn').onclick = () => { if(confirm('Сбросить поле?')) { tacticsData={players:{}, opponents:[]}; saveTactics(); renderTactics(); } };
-
-// --- 6. МОДАЛКИ (Без изменений) ---
 const modals = document.querySelectorAll('.modal-overlay'); const closeBtns = document.querySelectorAll('.close-modal-btn');
 function showModal(id) { document.getElementById(id).classList.add('visible'); }
 function hideModals() { modals.forEach(m => m.classList.remove('visible')); }
@@ -311,79 +372,9 @@ window.deleteEvent = (d, id) => { if(confirm('Удалить?')) { events[d]=eve
 document.getElementById('add-player-btn').onclick = () => { document.getElementById('add-edit-player-form').reset(); document.getElementById('player-id').value = ''; showModal('playerModal'); };
 document.getElementById('add-edit-player-form').onsubmit = (e) => { e.preventDefault(); const id = document.getElementById('player-id').value; const data = { id: id ? +id : Date.now(), name: document.getElementById('player-name').value, pos: document.getElementById('player-pos').value, status: document.getElementById('player-status').value, height: document.getElementById('player-height').value, weight: document.getElementById('player-weight').value }; if(id) { const i = players.findIndex(x=>x.id==id); if(i!==-1) players[i]=data; } else players.push(data); savePlayers(); hideModals(); renderAll(); };
 window.editPlayer = (id) => { const p = players.find(x=>x.id==id); if(!p)return; document.getElementById('player-id').value=p.id; document.getElementById('player-name').value=p.name; document.getElementById('player-pos').value=p.pos; document.getElementById('player-status').value=p.status; document.getElementById('player-height').value=p.height; document.getElementById('player-weight').value=p.weight; showModal('playerModal'); };
-window.deletePlayer = (id) => { if(confirm('Удалить?')) { players=players.filter(x=>x.id!=id); savePlayers(); renderAll(); } };
-
-// --- 7. НАСТРОЙКИ (ЭКСПОРТ / ИМПОРТ) ---
-document.getElementById('export-btn').addEventListener('click', () => {
-    const allData = {
-        players: players,
-        events: events,
-        tacticsData: tacticsData,
-        backupDate: new Date().toISOString()
-    };
-    const jsonString = JSON.stringify(allData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `coach_data_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-});
-
-document.getElementById('import-trigger-btn').addEventListener('click', () => {
-    document.getElementById('import-file').click();
-});
-
-document.getElementById('import-file').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (!confirm('ВНИМАНИЕ: Все текущие данные будут заменены данными из файла. Продолжить?')) {
-        e.target.value = ''; // Сброс выбора файла
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        try {
-            const data = JSON.parse(event.target.result);
-            
-            // Простейшая валидация
-            if (data.players && data.events) {
-                players = data.players;
-                events = data.events;
-                tacticsData = data.tacticsData || { players: {}, opponents: [] };
-                
-                savePlayers();
-                saveEvents();
-                saveTactics();
-                renderAll();
-                
-                alert('База данных успешно загружена!');
-            } else {
-                alert('Ошибка: Неверный формат файла.');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Ошибка при чтении файла.');
-        }
-    };
-    reader.readAsText(file);
-});
-
-document.getElementById('clear-all-btn').addEventListener('click', () => {
-    if (confirm('ВЫ УВЕРЕНЫ? Это удалит ВСЕ данные (игроков, матчи, тактику) безвозвратно!')) {
-        if (confirm('Точно? Пути назад нет.')) {
-            localStorage.removeItem('coachApp_players');
-            localStorage.removeItem('coachApp_events');
-            localStorage.removeItem('coachApp_tactics');
-            location.reload(); // Перезагрузка страницы для сброса состояния
-        }
-    }
-});
-
+window.deletePlayer = (id) => { if(confirm('Удалить игрока?')) { players=players.filter(x=>x.id!=id); savePlayers(); renderAll(); } };
+document.getElementById('export-btn').addEventListener('click', () => { const allData = { players: players, events: events, tacticsData: tacticsData, backupDate: new Date().toISOString() }; const jsonString = JSON.stringify(allData, null, 2); const blob = new Blob([jsonString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `coach_data_${new Date().toISOString().split('T')[0]}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); });
+document.getElementById('import-trigger-btn').addEventListener('click', () => { document.getElementById('import-file').click(); });
+document.getElementById('import-file').addEventListener('change', (e) => { const file = e.target.files[0]; if (!file) return; if (!confirm('ВНИМАНИЕ: Все текущие данные будут заменены данными из файла. Продолжить?')) { e.target.value = ''; return; } const reader = new FileReader(); reader.onload = (event) => { try { const data = JSON.parse(event.target.result); if (data.players && data.events) { players = data.players; events = data.events; tacticsData = data.tacticsData || { players: {}, opponents: [] }; savePlayers(); saveEvents(); saveTactics(); renderAll(); alert('База данных успешно загружена!'); } else { alert('Ошибка: Неверный формат файла.'); } } catch (err) { console.error(err); alert('Ошибка при чтении файла.'); } }; reader.readAsText(file); });
+document.getElementById('clear-all-btn').addEventListener('click', () => { if (confirm('ВЫ УВЕРЕНЫ? Это удалит ВСЕ данные (игроков, матчи, тактику) безвозвратно!')) { if (confirm('Точно? Пути назад нет.')) { localStorage.removeItem('coachApp_players'); localStorage.removeItem('coachApp_events'); localStorage.removeItem('coachApp_tactics'); location.reload(); } } });
 window.onload = () => { initData(); renderAll(); };
