@@ -12,19 +12,19 @@ function initData() {
     const p = localStorage.getItem('coachApp_players');
     if (p) players = JSON.parse(p);
     else {
-        players = [{id:1,name:"Буринский Тимур",pos:"Вратарь",status:"Здоров"},{id:2,name:"Шимак Пётр",pos:"Вратарь",status:"Здоров"},{id:3,name:"Чирва Егор",pos:"Защитник",status:"Здоров"},{id:4,name:"Розум Илья",pos:"Защитник",status:"Здоров"},{id:5,name:"Мудрый Артём",pos:"Защитник",status:"Здоров"},{id:6,name:"Щур Степан",pos:"Защитник",status:"Здоров"},{id:7,name:"Левкевич Кирилл",pos:"Защитник",status:"Здоров"},{id:8,name:"Толпо Матвей",pos:"Защитник",status:"Здоров"},{id:9,name:"Верчук Роман",pos:"Защитник",status:"Здоров"},{id:10,name:"Лихаческий Иван",pos:"Защитник",status:"Здоров"},{id:11,name:"Толмачёв Тимур",pos:"Защитник",status:"Здоров"},{id:12,name:"Завиленский Илья",pos:"Полузащитник",status:"Здоров"},{id:13,name:"Шапляк Дементий",pos:"Полузащитник",status:"Здоров"},{id:14,name:"Гутник Глеб",pos:"Полузащитник",status:"Здоров"},{id:15,name:"Цуприняк Иван",pos:"Полузащитник",status:"Здоров"},{id:16,name:"Поплавский Артём",pos:"Полузащитник",status:"Здоров"},{id:17,name:"Хроль Федор",pos:"Полузащитник",status:"Здоров"},{id:18,name:"Климко Роман",pos:"Полузащитник",status:"Здоров"},{id:19,name:"Бернгард Арсений",pos:"Полузащитник",status:"Здоров"},{id:20,name:"Египцев Фёдор",pos:"Полузащитник",status:"Здоров"},{id:21,name:"Дубалеко Артём",pos:"Полузащитник",status:"Здоров"},{id:22,name:"Алисиевич Матвей",pos:"Нападающий",status:"Здоров"},{id:23,name:"Савастюк Мирон",pos:"Нападающий",status:"Здоров"},{id:24,name:"Клишевич Александр",pos:"Нападающий",status:"Здоров"},{id:25,name:"Сабович Даниил",pos:"Нападающий",status:"Здоров"}];
+        players = [{ id: 1, name: "Буринский Тимур", pos: "Вратарь", status: "Здоров" }, { id: 2, name: "Шимак Пётр", pos: "Вратарь", status: "Здоров" }, { id: 3, name: "Чирва Егор", pos: "Защитник", status: "Здоров" }, { id: 4, name: "Розум Илья", pos: "Защитник", status: "Здоров" }, { id: 5, name: "Мудрый Артём", pos: "Защитник", status: "Здоров" }, { id: 6, name: "Щур Степан", pos: "Защитник", status: "Здоров" }, { id: 7, name: "Левкевич Кирилл", pos: "Защитник", status: "Здоров" }, { id: 8, name: "Толпо Матвей", pos: "Защитник", status: "Здоров" }, { id: 9, name: "Верчук Роман", pos: "Защитник", status: "Здоров" }, { id: 10, name: "Лихаческий Иван", pos: "Защитник", status: "Здоров" }, { id: 11, name: "Толмачёв Тимур", pos: "Защитник", status: "Здоров" }, { id: 12, name: "Завиленский Илья", pos: "Полузащитник", status: "Здоров" }, { id: 13, name: "Шапляк Дементий", pos: "Полузащитник", status: "Здоров" }, { id: 14, name: "Гутник Глеб", pos: "Полузащитник", status: "Здоров" }, { id: 15, name: "Цуприняк Иван", pos: "Полузащитник", status: "Здоров" }, { id: 16, name: "Поплавский Артём", pos: "Полузащитник", status: "Здоров" }, { id: 17, name: "Хроль Федор", pos: "Полузащитник", status: "Здоров" }, { id: 18, name: "Климко Роман", pos: "Полузащитник", status: "Здоров" }, { id: 19, name: "Бернгард Арсений", pos: "Полузащитник", status: "Здоров" }, { id: 20, name: "Египцев Фёдор", pos: "Полузащитник", status: "Здоров" }, { id: 21, name: "Дубалеко Артём", pos: "Полузащитник", status: "Здоров" }, { id: 22, name: "Алисиевич Матвей", pos: "Нападающий", status: "Здоров" }, { id: 23, name: "Савастюк Мирон", pos: "Нападающий", status: "Здоров" }, { id: 24, name: "Клишевич Александр", pos: "Нападающий", status: "Здоров" }, { id: 25, name: "Сабович Даниил", pos: "Нападающий", status: "Здоров" }];
         savePlayers();
     }
     // Матчи
     const ev = localStorage.getItem('coachApp_events');
-    if(ev) events = JSON.parse(ev);
+    if (ev) events = JSON.parse(ev);
     else { events = {}; saveEvents(); }
-    
+
     // Тактика
     const t = localStorage.getItem('coachApp_tactics');
-    if(t) {
+    if (t) {
         let raw = JSON.parse(t);
-        if(!raw.players) tacticsData = { players: raw, opponents: [] };
+        if (!raw.players) tacticsData = { players: raw, opponents: [] };
         else tacticsData = raw;
     }
 }
@@ -95,7 +95,7 @@ function renderAnalytics() {
 
         const pathD = "M" + points.map(p => `${p.x} ${p.y}`).join(" L ");
         const areaD = `${pathD} V ${height} L ${padding} ${height} Z`;
-        
+
         return `
             <svg class="line-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">
                 <defs>
@@ -109,22 +109,22 @@ function renderAnalytics() {
                 <path class="line-chart-area" d="${areaD}" />
 
                 <!-- Горизонтальные линии для контекста -->
-                <line class="line-chart-gridline" x1="${padding}" y1="${padding}" x2="${width-padding}" y2="${padding}"></line>
-                <line class="line-chart-gridline" x1="${padding}" y1="${height/2}" x2="${width-padding}" y2="${height/2}"></line>
-                <line class="line-chart-gridline" x1="${padding}" y1="${height-padding}" x2="${width-padding}" y2="${height-padding}"></line>
+                <line class="line-chart-gridline" x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}"></line>
+                <line class="line-chart-gridline" x1="${padding}" y1="${height / 2}" x2="${width - padding}" y2="${height / 2}"></line>
+                <line class="line-chart-gridline" x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}"></line>
                 
                 <!-- Линия графика -->
                 <path class="line-chart-path" d="${pathD}" />
                 
                 <!-- Точки на графике -->
                 ${points.map(p => {
-                    let resultClass = 'point-draw';
-                    if (p.y === padding) resultClass = 'point-win';
-                    if (p.y === height-padding) resultClass = 'point-loss';
-                    return `<circle class="line-chart-point ${resultClass}" cx="${p.x}" cy="${p.y}" r="4">
+            let resultClass = 'point-draw';
+            if (p.y === padding) resultClass = 'point-win';
+            if (p.y === height - padding) resultClass = 'point-loss';
+            return `<circle class="line-chart-point ${resultClass}" cx="${p.x}" cy="${p.y}" r="4">
                                 <title>${new Date(p.match.date).toLocaleDateString()}: ${p.match.opponent} (${p.match.homeScore}:${p.match.awayScore})</title>
                             </circle>`;
-                }).join('')}
+        }).join('')}
             </svg>
         `;
     }
@@ -138,8 +138,8 @@ function renderAnalytics() {
 
     // --- 4. Лучшие бомбардиры ---
     const scorers = {};
-    allM.forEach(m => { if(m.details && m.details.goals) m.details.goals.forEach(id => { scorers[id] = (scorers[id] || 0) + 1; }); });
-    const sortedScorers = Object.entries(scorers).sort((a,b) => b[1] - a[1]).slice(0,3);
+    allM.forEach(m => { if (m.details && m.details.goals) m.details.goals.forEach(id => { scorers[id] = (scorers[id] || 0) + 1; }); });
+    const sortedScorers = Object.entries(scorers).sort((a, b) => b[1] - a[1]).slice(0, 3);
     let scorersHTML = '';
     if (sortedScorers.length > 0) {
         scorersHTML = '<ul>';
@@ -199,10 +199,10 @@ function renderAnalytics() {
                 <div class="card-header"><span class="card-icon">🥅</span><h3>Статистика голов</h3></div>
                 <div class="card-body">
                     <div class="goals-chart">
-                        <div class="goal-row"><span>Забито</span><div class="progress-bg"><div class="progress-fill p-green" style="width:${(gs/(gs+gc||1))*100}%"></div></div><span class="g-val">${gs}</span></div>
-                        <div class="goal-row"><span>Пропущено</span><div class="progress-bg"><div class="progress-fill p-red" style="width:${(gc/(gs+gc||1))*100}%"></div></div><span class="g-val">${gc}</span></div>
+                        <div class="goal-row"><span>Забито</span><div class="progress-bg"><div class="progress-fill p-green" style="width:${(gs / (gs + gc || 1)) * 100}%"></div></div><span class="g-val">${gs}</span></div>
+                        <div class="goal-row"><span>Пропущено</span><div class="progress-bg"><div class="progress-fill p-red" style="width:${(gc / (gs + gc || 1)) * 100}%"></div></div><span class="g-val">${gc}</span></div>
                     </div>
-                    <div class="goal-diff">Разница: <span class="${diff>=0?'good-text':'bad-text'}">${diff>0?'+':''}${diff}</span></div>
+                    <div class="goal-diff">Разница: <span class="${diff >= 0 ? 'good-text' : 'bad-text'}">${diff > 0 ? '+' : ''}${diff}</span></div>
                 </div>
             </div>
         </div>
@@ -212,10 +212,10 @@ function renderAnalytics() {
 // 4.2. Игроки
 function renderPlayers() {
     const stats = {};
-    players.forEach(p => stats[p.id] = {g:0, y:0, r:0});
-    Object.values(events).forEach(day => day.forEach(ev => { if(ev.type==='match' && ev.details) { if(ev.details.goals) ev.details.goals.forEach(id => {if(stats[id]) stats[id].g++}); if(ev.details.yellow) ev.details.yellow.forEach(id => {if(stats[id]) stats[id].y++}); if(ev.details.red) ev.details.red.forEach(id => {if(stats[id]) stats[id].r++}); } }));
+    players.forEach(p => stats[p.id] = { g: 0, y: 0, r: 0 });
+    Object.values(events).forEach(day => day.forEach(ev => { if (ev.type === 'match' && ev.details) { if (ev.details.goals) ev.details.goals.forEach(id => { if (stats[id]) stats[id].g++ }); if (ev.details.yellow) ev.details.yellow.forEach(id => { if (stats[id]) stats[id].y++ }); if (ev.details.red) ev.details.red.forEach(id => { if (stats[id]) stats[id].r++ }); } }));
     const list = document.getElementById('players-list-container');
-    if(!list) return;
+    if (!list) return;
     const tableRowsHTML = players.map(p => `
         <tr>
             <td>${p.name}</td>
@@ -259,44 +259,44 @@ function renderPlayers() {
 // 4.3. Матчи
 function renderMatches() {
     const list = document.getElementById('matches-list-container');
-    if(!list) return;
+    if (!list) return;
     let all = [];
-    Object.keys(events).forEach(d => events[d].forEach(e => {if(e.type==='match') all.push({...e, date:d})}));
-    all.sort((a,b)=>new Date(b.date)-new Date(a.date));
+    Object.keys(events).forEach(d => events[d].forEach(e => { if (e.type === 'match') all.push({ ...e, date: d }) }));
+    all.sort((a, b) => new Date(b.date) - new Date(a.date));
     list.innerHTML = all.length ? all.map(m => { let res = m.homeScore > m.awayScore ? 'res-win' : (m.homeScore < m.awayScore ? 'res-loss' : 'res-draw'); return `<div class="match-item"><div class="match-info-container"><div class="match-date">${new Date(m.date).toLocaleDateString()}</div><div class="match-opponent">vs ${m.opponent}</div></div><div class="score-badge ${res}">${m.homeScore}:${m.awayScore}</div></div>` }).join('') : '<p style="text-align:center;color:#888">Нет матчей</p>';
 }
 
 // 4.4. Календарь
 function renderCalendar() {
     const cont = document.getElementById('calendar-container');
-    if(!cont) return;
-    cont.innerHTML = `<div class="cal-header"><button onclick="changeMonth(-1)">◀</button><h2>${currentDate.toLocaleDateString('ru',{month:'long',year:'numeric'})}</h2><button onclick="changeMonth(1)">▶</button></div>`;
+    if (!cont) return;
+    cont.innerHTML = `<div class="cal-header"><button onclick="changeMonth(-1)">◀</button><h2>${currentDate.toLocaleDateString('ru', { month: 'long', year: 'numeric' })}</h2><button onclick="changeMonth(1)">▶</button></div>`;
     const grid = document.createElement('div'); grid.className = 'cal-grid';
-    ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => grid.innerHTML += `<div class="cal-day-name">${d}</div>`);
+    ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].forEach(d => grid.innerHTML += `<div class="cal-day-name">${d}</div>`);
     const y = currentDate.getFullYear(), m = currentDate.getMonth();
-    const fd = new Date(y,m,1).getDay() || 7;
-    const dim = new Date(y,m+1,0).getDate();
-    for(let i=1; i<fd; i++) grid.innerHTML += `<div></div>`;
-    for(let d=1; d<=dim; d++) {
-        const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const fd = new Date(y, m, 1).getDay() || 7;
+    const dim = new Date(y, m + 1, 0).getDate();
+    for (let i = 1; i < fd; i++) grid.innerHTML += `<div></div>`;
+    for (let d = 1; d <= dim; d++) {
+        const ds = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const div = document.createElement('div'); div.className = 'cal-day';
-        if(new Date().toDateString() === new Date(ds).toDateString()) div.classList.add('today');
+        if (new Date().toDateString() === new Date(ds).toDateString()) div.classList.add('today');
         div.innerHTML = `<div><b>${d}</b></div>`;
-        if(events[ds]) { events[ds].sort((a,b)=>a.time.localeCompare(b.time)); events[ds].forEach(e => div.innerHTML += `<div class="evt-dot evt-${e.type}">${e.time} ${e.type==='match'?e.opponent:e.description||'?'}</div>`); }
+        if (events[ds]) { events[ds].sort((a, b) => a.time.localeCompare(b.time)); events[ds].forEach(e => div.innerHTML += `<div class="evt-dot evt-${e.type}">${e.time} ${e.type === 'match' ? e.opponent : e.description || '?'}</div>`); }
         div.onclick = () => openEventModal(ds);
         grid.appendChild(div);
     }
     cont.appendChild(grid);
 }
-window.changeMonth = (d) => { currentDate.setMonth(currentDate.getMonth()+d); renderCalendar(); };
+window.changeMonth = (d) => { currentDate.setMonth(currentDate.getMonth() + d); renderCalendar(); };
 
 // --- 5. ТАКТИКА ---
 function renderTactics() {
     const bench = document.getElementById('tactics-bench');
     const fieldLayer = document.getElementById('field-players-layer');
-    if(!bench || !fieldLayer) return;
+    if (!bench || !fieldLayer) return;
     bench.innerHTML = ''; fieldLayer.innerHTML = '';
-    
+
     players.forEach(p => {
         const pos = tacticsData.players[p.id] || { onField: false, x: 0, y: 0 };
         if (pos.onField) {
@@ -329,7 +329,7 @@ function renderTactics() {
         }
     });
 
-    if(tacticsData.opponents) {
+    if (tacticsData.opponents) {
         tacticsData.opponents.forEach((opp, idx) => {
             const chip = document.createElement('div');
             chip.className = 'player-chip field-chip opponent-chip';
@@ -348,33 +348,168 @@ function renderTactics() {
 function createChip(p, pos) { const chip = document.createElement('div'); chip.className = 'player-chip'; chip.setAttribute('data-type', 'player'); chip.setAttribute('data-id', p.id); chip.innerText = p.name.substring(0, 2).toUpperCase(); chip.onmousedown = dragStart; chip.ontouchstart = dragStart; if (pos.onField) { chip.setAttribute('data-name', p.name); chip.style.left = pos.x + '%'; chip.style.top = pos.y + '%'; } return chip; }
 let activeChip = null;
 let shiftX = 0, shiftY = 0;
-function dragStart(e) { e.preventDefault(); const evt = e.type === 'touchstart' ? e.touches[0] : e; activeChip = e.target; const rect = activeChip.getBoundingClientRect(); shiftX = evt.clientX - rect.left; shiftY = evt.clientY - rect.top; activeChip.style.position = 'fixed'; activeChip.style.zIndex = 1000; moveAt(evt.clientX, evt.clientY); document.addEventListener('mouseup', dragEnd); document.addEventListener('mousemove', dragMove); document.addEventListener('touchend', dragEnd); document.addEventListener('touchmove', dragMove, {passive:false}); }
+function dragStart(e) { e.preventDefault(); const evt = e.type === 'touchstart' ? e.touches[0] : e; activeChip = e.target; const rect = activeChip.getBoundingClientRect(); shiftX = evt.clientX - rect.left; shiftY = evt.clientY - rect.top; activeChip.style.position = 'fixed'; activeChip.style.zIndex = 1000; moveAt(evt.clientX, evt.clientY); document.addEventListener('mouseup', dragEnd); document.addEventListener('mousemove', dragMove); document.addEventListener('touchend', dragEnd); document.addEventListener('touchmove', dragMove, { passive: false }); }
 function moveAt(pageX, pageY) { if (!activeChip) return; activeChip.style.left = pageX - shiftX + 'px'; activeChip.style.top = pageY - shiftY + 'px'; }
 function dragMove(e) { if (!activeChip) return; e.preventDefault(); const evt = e.type === 'touchmove' ? e.touches[0] : e; moveAt(evt.clientX, evt.clientY); }
 function dragEnd(e) { if (!activeChip) return; document.removeEventListener('mouseup', dragEnd); document.removeEventListener('mousemove', dragMove); document.removeEventListener('touchend', dragEnd); document.removeEventListener('touchmove', dragMove); const evt = e.type === 'touchend' ? e.changedTouches[0] : e; const field = document.getElementById('football-field'); const fRect = field.getBoundingClientRect(); const realChipLeft = evt.clientX - shiftX; const realChipTop = evt.clientY - shiftY; const chipCenterX = realChipLeft + (activeChip.offsetWidth / 2); const chipCenterY = realChipTop + (activeChip.offsetHeight / 2); const inside = (chipCenterX >= fRect.left && chipCenterX <= fRect.right && chipCenterY >= fRect.top && chipCenterY <= fRect.bottom); activeChip.style.position = ''; activeChip.style.zIndex = ''; const type = activeChip.getAttribute('data-type'); if (inside) { let px = ((realChipLeft - fRect.left) / fRect.width) * 100; let py = ((realChipTop - fRect.top) / fRect.height) * 100; px = Math.max(0, Math.min(100, px)); py = Math.max(0, Math.min(100, py)); if (type === 'player') { const pid = activeChip.getAttribute('data-id'); tacticsData.players[pid] = { onField: true, x: px, y: py }; } else if (type === 'opponent') { const idx = activeChip.getAttribute('data-idx'); tacticsData.opponents[idx] = { id: tacticsData.opponents[idx].id, x: px, y: py }; } } else { if (type === 'player') { const pid = activeChip.getAttribute('data-id'); tacticsData.players[pid] = { onField: false, x: 0, y: 0 }; } else if (type === 'opponent') { const idx = activeChip.getAttribute('data-idx'); removeOpponent(idx); activeChip = null; return; } } saveTactics(); renderTactics(); activeChip = null; }
-document.getElementById('add-opponent-btn').onclick = () => { if(!tacticsData.opponents) tacticsData.opponents = []; tacticsData.opponents.push({ id: tacticsData.opponents.length + 1, x: 50, y: 50 }); saveTactics(); renderTactics(); };
+document.getElementById('add-opponent-btn').onclick = () => { if (!tacticsData.opponents) tacticsData.opponents = []; tacticsData.opponents.push({ id: tacticsData.opponents.length + 1, x: 50, y: 50 }); saveTactics(); renderTactics(); };
 function removeOpponent(idx) { tacticsData.opponents.splice(idx, 1); saveTactics(); renderTactics(); }
-document.getElementById('reset-tactics-btn').onclick = () => { if(confirm('Сбросить поле?')) { tacticsData={players:{}, opponents:[]}; saveTactics(); renderTactics(); } };
-const modals = document.querySelectorAll('.modal-overlay'); const closeBtns = document.querySelectorAll('.close-modal-btn');
+document.getElementById('reset-tactics-btn').onclick = () => { if (confirm('Сбросить поле?')) { tacticsData = { players: {}, opponents: [] }; saveTactics(); renderTactics(); } };
+const modals = document.querySelectorAll('.modal-overlay');
+const closeBtns = document.querySelectorAll('.close-modal-btn');
+const confirmModal = document.getElementById('confirmModal');
+let confirmCallback = null;
+
+// NEW: Custom Confirm Modal Logic
+function showConfirmModal(message, callback) {
+    document.getElementById('confirm-message').textContent = message;
+    confirmCallback = callback;
+    confirmModal.classList.add('visible');
+}
+
+document.getElementById('confirm-cancel-btn').onclick = () => {
+    confirmModal.classList.remove('visible');
+    confirmCallback = null;
+};
+
+document.getElementById('confirm-ok-btn').onclick = () => {
+    if (confirmCallback) confirmCallback();
+    confirmModal.classList.remove('visible');
+    confirmCallback = null;
+};
+
 function showModal(id) { document.getElementById(id).classList.add('visible'); }
-function hideModals() { modals.forEach(m => m.classList.remove('visible')); }
+function hideModals() {
+    modals.forEach(m => m.classList.remove('visible'));
+    confirmCallback = null;
+}
 closeBtns.forEach(b => b.onclick = hideModals);
-function openEventModal(ds) { selectedDate = ds; document.getElementById('selection-modal-date').innerText = new Date(ds).toLocaleDateString(); const list = document.getElementById('existing-events-list'); list.innerHTML = ''; if(events[ds]) events[ds].forEach(ev => { list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee"><span><b>${ev.time}</b> ${ev.type==='match'?'Матч: '+ev.opponent:ev.description}</span><div><button onclick="editEvent('${ds}',${ev.id})" style="border:none;background:none;cursor:pointer">✏️</button><button onclick="deleteEvent('${ds}',${ev.id})" style="border:none;background:none;color:red;cursor:pointer">✕</button></div></div>`; }); else list.innerHTML = '<p style="text-align:center;color:#999">Пусто</p>'; showModal('eventSelectionModal'); }
-window.editEvent = (ds, id) => { const ev = events[ds].find(e => e.id == id); if (!ev) return; hideModals(); const type = ev.type; const map = { 'match': 'addMatchModal', 'training': 'addTrainingModal', 'meeting': 'addMeetingModal' }; document.getElementById(`${type}-modal-date`).innerText = new Date(ds).toLocaleDateString(); document.getElementById(`${type}-date`).value = ds; document.getElementById(`${type}-event-id`).value = id; document.getElementById(`${type}-time`).value = ev.time; if (type === 'match') { document.getElementById('match-opponent').value = ev.opponent; document.getElementById('home-score').value = ev.homeScore; document.getElementById('away-score').value = ev.awayScore; const d = ev.details || {}; tempMatchDetails = { goals: d.goals||[], yellow: d.yellow||[], red: d.red||[] }; populateSelects(); updateDetailList('goals'); updateDetailList('yellow'); updateDetailList('red'); } else if (type === 'training') { document.getElementById('training-description').value = ev.description; } else { document.getElementById('meeting-opponent').value = ev.description; } showModal(map[type]); };
+
+// ---------------------------------------------------------
+// NEW: Photo Preview Logic
+window.updatePhotoPreview = (url) => {
+    const preview = document.getElementById('player-photo-preview');
+    if (url && url.length > 5) {
+        preview.innerHTML = `<img src="${url}" onerror="this.src=''; this.parentElement.innerHTML='⚠️'">`;
+    } else {
+        preview.innerHTML = `<span>📷</span>`;
+    }
+};
+// ---------------------------------------------------------
+
+function openEventModal(ds) { selectedDate = ds; document.getElementById('selection-modal-date').innerText = new Date(ds).toLocaleDateString(); const list = document.getElementById('existing-events-list'); list.innerHTML = ''; if (events[ds]) events[ds].forEach(ev => { list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee"><span><b>${ev.time}</b> ${ev.type === 'match' ? 'Матч: ' + ev.opponent : ev.description}</span><div><button onclick="editEvent('${ds}',${ev.id})" style="border:none;background:none;cursor:pointer">✏️</button><button onclick="deleteEvent('${ds}',${ev.id})" style="border:none;background:none;color:red;cursor:pointer">✕</button></div></div>`; }); else list.innerHTML = '<p style="text-align:center;color:#999">Пусто</p>'; showModal('eventSelectionModal'); }
+window.editEvent = (ds, id) => { const ev = events[ds].find(e => e.id == id); if (!ev) return; hideModals(); const type = ev.type; const map = { 'match': 'addMatchModal', 'training': 'addTrainingModal', 'meeting': 'addMeetingModal' }; document.getElementById(`${type}-modal-date`).innerText = new Date(ds).toLocaleDateString(); document.getElementById(`${type}-date`).value = ds; document.getElementById(`${type}-event-id`).value = id; document.getElementById(`${type}-time`).value = ev.time; if (type === 'match') { document.getElementById('match-opponent').value = ev.opponent; document.getElementById('home-score').value = ev.homeScore; document.getElementById('away-score').value = ev.awayScore; const d = ev.details || {}; tempMatchDetails = { goals: d.goals || [], yellow: d.yellow || [], red: d.red || [] }; populateSelects(); updateDetailList('goals'); updateDetailList('yellow'); updateDetailList('red'); } else if (type === 'training') { document.getElementById('training-description').value = ev.description; } else { document.getElementById('meeting-opponent').value = ev.description; } showModal(map[type]); };
 document.getElementById('select-match-btn').onclick = () => { hideModals(); setupForm('match'); }; document.getElementById('select-training-btn').onclick = () => { hideModals(); setupForm('training'); }; document.getElementById('select-meeting-btn').onclick = () => { hideModals(); setupForm('meeting'); };
-function populateSelects() { ['goal-select', 'yellow-select', 'red-select'].forEach(id => { const el = document.getElementById(id); if(el) { el.innerHTML = '<option value="">Выбрать...</option>' + players.map(p=>`<option value="${p.id}">${p.name}</option>`).join(''); } }); }
-function updateDetailList(type) { const c = document.getElementById(`${type}-list`); if(c) { c.innerHTML = tempMatchDetails[type].map((id,i) => { const p = players.find(x=>x.id==id); return p ? `<div class="added-item">${p.name} <button type="button" onclick="removeDetail('${type}',${i})">✕</button></div>` : ''; }).join(''); } }
-window.removeDetail = (t,i) => { tempMatchDetails[t].splice(i,1); updateDetailList(t); };
-document.getElementById('add-goal-btn').onclick = () => { const v=document.getElementById('goal-select').value; if(v){tempMatchDetails.goals.push(+v); updateDetailList('goals');} }; document.getElementById('add-yellow-btn').onclick = () => { const v=document.getElementById('yellow-select').value; if(v){tempMatchDetails.yellow.push(+v); updateDetailList('yellow');} }; document.getElementById('add-red-btn').onclick = () => { const v=document.getElementById('red-select').value; if(v){tempMatchDetails.red.push(+v); updateDetailList('red');} };
-function setupForm(type) { const map = { 'match': 'addMatchModal', 'training': 'addTrainingModal', 'meeting': 'addMeetingModal' }; document.getElementById(`${type}-modal-date`).innerText = new Date(selectedDate).toLocaleDateString(); document.getElementById(`${type}-date`).value = selectedDate; document.getElementById(`add-${type}-form`).reset(); document.getElementById(`${type}-event-id`).value = ""; if(type === 'match') { tempMatchDetails = {goals:[],yellow:[],red:[]}; populateSelects(); updateDetailList('goals'); updateDetailList('yellow'); updateDetailList('red'); } showModal(map[type]); }
-['match', 'training', 'meeting'].forEach(type => { document.getElementById(`add-${type}-form`).onsubmit = (e) => { e.preventDefault(); const d = document.getElementById(`${type}-date`).value; const id = document.getElementById(`${type}-event-id`).value; let nev = { id: id ? +id : Date.now(), type: type, time: document.getElementById(`${type}-time`).value }; if(type==='match') { nev.opponent = document.getElementById('match-opponent').value; nev.homeScore = +document.getElementById('home-score').value; nev.awayScore = +document.getElementById('away-score').value; nev.details = JSON.parse(JSON.stringify(tempMatchDetails)); } else if (type==='training') nev.description = document.getElementById('training-description').value; else nev.description = document.getElementById('meeting-opponent').value; if(!events[d]) events[d] = []; if(id) { const idx = events[d].findIndex(x=>x.id==id); if(idx!==-1) events[d][idx]=nev; } else events[d].push(nev); saveEvents(); hideModals(); renderAll(); }; });
-window.deleteEvent = (d, id) => { if(confirm('Удалить?')) { events[d]=events[d].filter(e=>e.id!=id); if(!events[d].length) delete events[d]; saveEvents(); hideModals(); renderAll(); } };
-document.getElementById('add-player-btn').onclick = () => { document.getElementById('add-edit-player-form').reset(); document.getElementById('player-id').value = ''; showModal('playerModal'); };
-document.getElementById('add-edit-player-form').onsubmit = (e) => { e.preventDefault(); const id = document.getElementById('player-id').value; const data = { id: id ? +id : Date.now(), name: document.getElementById('player-name').value, pos: document.getElementById('player-pos').value, status: document.getElementById('player-status').value, height: document.getElementById('player-height').value, weight: document.getElementById('player-weight').value }; if(id) { const i = players.findIndex(x=>x.id==id); if(i!==-1) players[i]=data; } else players.push(data); savePlayers(); hideModals(); renderAll(); };
-window.editPlayer = (id) => { const p = players.find(x=>x.id==id); if(!p)return; document.getElementById('player-id').value=p.id; document.getElementById('player-name').value=p.name; document.getElementById('player-pos').value=p.pos; document.getElementById('player-status').value=p.status; document.getElementById('player-height').value=p.height; document.getElementById('player-weight').value=p.weight; showModal('playerModal'); };
-window.deletePlayer = (id) => { if(confirm('Удалить игрока?')) { players=players.filter(x=>x.id!=id); savePlayers(); renderAll(); } };
+function populateSelects() { ['goal-select', 'yellow-select', 'red-select'].forEach(id => { const el = document.getElementById(id); if (el) { el.innerHTML = '<option value="">Выбрать...</option>' + players.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); } }); }
+function updateDetailList(type) { const c = document.getElementById(`${type}-list`); if (c) { c.innerHTML = tempMatchDetails[type].map((id, i) => { const p = players.find(x => x.id == id); return p ? `<div class="added-item">${p.name} <button type="button" onclick="removeDetail('${type}',${i})">✕</button></div>` : ''; }).join(''); } }
+window.removeDetail = (t, i) => { tempMatchDetails[t].splice(i, 1); updateDetailList(t); };
+document.getElementById('add-goal-btn').onclick = () => { const v = document.getElementById('goal-select').value; if (v) { tempMatchDetails.goals.push(+v); updateDetailList('goals'); } }; document.getElementById('add-yellow-btn').onclick = () => { const v = document.getElementById('yellow-select').value; if (v) { tempMatchDetails.yellow.push(+v); updateDetailList('yellow'); } }; document.getElementById('add-red-btn').onclick = () => { const v = document.getElementById('red-select').value; if (v) { tempMatchDetails.red.push(+v); updateDetailList('red'); } };
+function setupForm(type) { const map = { 'match': 'addMatchModal', 'training': 'addTrainingModal', 'meeting': 'addMeetingModal' }; document.getElementById(`${type}-modal-date`).innerText = new Date(selectedDate).toLocaleDateString(); document.getElementById(`${type}-date`).value = selectedDate; document.getElementById(`add-${type}-form`).reset(); document.getElementById(`${type}-event-id`).value = ""; if (type === 'match') { tempMatchDetails = { goals: [], yellow: [], red: [] }; populateSelects(); updateDetailList('goals'); updateDetailList('yellow'); updateDetailList('red'); } showModal(map[type]); }
+['match', 'training', 'meeting'].forEach(type => { document.getElementById(`add-${type}-form`).onsubmit = (e) => { e.preventDefault(); const d = document.getElementById(`${type}-date`).value; const id = document.getElementById(`${type}-event-id`).value; let nev = { id: id ? +id : Date.now(), type: type, time: document.getElementById(`${type}-time`).value }; if (type === 'match') { nev.opponent = document.getElementById('match-opponent').value; nev.homeScore = +document.getElementById('home-score').value; nev.awayScore = +document.getElementById('away-score').value; nev.details = JSON.parse(JSON.stringify(tempMatchDetails)); } else if (type === 'training') nev.description = document.getElementById('training-description').value; else nev.description = document.getElementById('meeting-opponent').value; if (!events[d]) events[d] = []; if (id) { const idx = events[d].findIndex(x => x.id == id); if (idx !== -1) events[d][idx] = nev; } else events[d].push(nev); saveEvents(); hideModals(); renderAll(); }; });
+
+// UPDATED: Delete Event with Custom Confirm
+window.deleteEvent = (d, id) => {
+    showConfirmModal('Удалить это событие?', () => {
+        events[d] = events[d].filter(e => e.id != id);
+        if (!events[d].length) delete events[d];
+        saveEvents();
+        hideModals(); // Close the list modal too
+        renderAll();
+    });
+};
+
+document.getElementById('add-player-btn').onclick = () => {
+    document.getElementById('add-edit-player-form').reset();
+    window.updatePhotoPreview(''); // Reset photo
+    document.getElementById('player-id').value = '';
+    showModal('playerModal');
+};
+
+// UPDATED: Save Player with new fields
+document.getElementById('add-edit-player-form').onsubmit = (e) => {
+    e.preventDefault();
+    const id = document.getElementById('player-id').value;
+    const data = {
+        id: id ? +id : Date.now(),
+        name: document.getElementById('player-name').value,
+        pos: document.getElementById('player-pos').value,
+        status: document.getElementById('player-status').value,
+        height: document.getElementById('player-height').value,
+        weight: document.getElementById('player-weight').value,
+        // NEW FIELDS
+        photo: document.getElementById('player-photo-url').value,
+        dob: document.getElementById('player-dob').value,
+        phone: document.getElementById('player-phone').value,
+        notes: document.getElementById('player-notes').value
+    };
+    if (id) { const i = players.findIndex(x => x.id == id); if (i !== -1) players[i] = data; }
+    else players.push(data);
+    savePlayers();
+    hideModals();
+    renderAll();
+};
+
+// UPDATED: Edit Player with new fields
+window.editPlayer = (id) => {
+    const p = players.find(x => x.id == id);
+    if (!p) return;
+    document.getElementById('player-id').value = p.id;
+    document.getElementById('player-name').value = p.name;
+    document.getElementById('player-pos').value = p.pos;
+    document.getElementById('player-status').value = p.status;
+    document.getElementById('player-height').value = p.height || '';
+    document.getElementById('player-weight').value = p.weight || '';
+    // New fields
+    document.getElementById('player-photo-url').value = p.photo || '';
+    window.updatePhotoPreview(p.photo);
+    document.getElementById('player-dob').value = p.dob || '';
+    document.getElementById('player-phone').value = p.phone || '';
+    document.getElementById('player-notes').value = p.notes || '';
+
+    showModal('playerModal');
+};
+
+// UPDATED: Delete Player with Custom Confirm
+window.deletePlayer = (id) => {
+    showConfirmModal('Удалить игрока? Это также удалит его из тактики.', () => {
+        players = players.filter(x => x.id != id);
+        savePlayers();
+        renderAll();
+    });
+};
+
 document.getElementById('export-btn').addEventListener('click', () => { const allData = { players: players, events: events, tacticsData: tacticsData, backupDate: new Date().toISOString() }; const jsonString = JSON.stringify(allData, null, 2); const blob = new Blob([jsonString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `coach_data_${new Date().toISOString().split('T')[0]}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); });
 document.getElementById('import-trigger-btn').addEventListener('click', () => { document.getElementById('import-file').click(); });
-document.getElementById('import-file').addEventListener('change', (e) => { const file = e.target.files[0]; if (!file) return; if (!confirm('ВНИМАНИЕ: Все текущие данные будут заменены данными из файла. Продолжить?')) { e.target.value = ''; return; } const reader = new FileReader(); reader.onload = (event) => { try { const data = JSON.parse(event.target.result); if (data.players && data.events) { players = data.players; events = data.events; tacticsData = data.tacticsData || { players: {}, opponents: [] }; savePlayers(); saveEvents(); saveTactics(); renderAll(); alert('База данных успешно загружена!'); } else { alert('Ошибка: Неверный формат файла.'); } } catch (err) { console.error(err); alert('Ошибка при чтении файла.'); } }; reader.readAsText(file); });
-document.getElementById('clear-all-btn').addEventListener('click', () => { if (confirm('ВЫ УВЕРЕНЫ? Это удалит ВСЕ данные (игроков, матчи, тактику) безвозвратно!')) { if (confirm('Точно? Пути назад нет.')) { localStorage.removeItem('coachApp_players'); localStorage.removeItem('coachApp_events'); localStorage.removeItem('coachApp_tactics'); location.reload(); } } });
+document.getElementById('import-file').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    showConfirmModal('ВНИМАНИЕ: Все текущие данные будут заменены данными из файла. Продолжить?', () => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.players && data.events) {
+                    players = data.players;
+                    events = data.events;
+                    tacticsData = data.tacticsData || { players: {}, opponents: [] };
+                    savePlayers(); saveEvents(); saveTactics(); renderAll();
+                    alert('База данных успешно загружена!'); // Keep simple alert for success
+                } else { alert('Ошибка: Неверный формат файла.'); }
+            } catch (err) { console.error(err); alert('Ошибка при чтении файла.'); }
+        };
+        reader.readAsText(file);
+    });
+    e.target.value = ''; // Reset input
+});
+
+document.getElementById('clear-all-btn').addEventListener('click', () => {
+    showConfirmModal('ВЫ УВЕРЕНЫ? Это удалит ВСЕ данные (игроков, матчи, тактику) безвозвратно!', () => {
+        showConfirmModal('Точно? Пути назад нет.', () => {
+            localStorage.removeItem('coachApp_players');
+            localStorage.removeItem('coachApp_events');
+            localStorage.removeItem('coachApp_tactics');
+            location.reload();
+        });
+    });
+});
 window.onload = () => { initData(); renderAll(); };
