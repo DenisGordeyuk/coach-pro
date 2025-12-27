@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Помощник Тренера Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header>
@@ -81,13 +83,15 @@
             <div class="settings-container">
                 <div class="setting-card">
                     <h3>📥 Экспорт</h3>
-                    <p>Скачайте файл с базой данных, чтобы не потерять информацию или перенести её на другое устройство.</p>
+                    <p>Скачайте файл с базой данных, чтобы не потерять информацию или перенести её на другое устройство.
+                    </p>
                     <button id="export-btn" class="action-btn export-color">Скачать базу данных</button>
                 </div>
-                
+
                 <div class="setting-card">
                     <h3>📤 Импорт</h3>
-                    <p>Загрузите ранее сохраненный файл. <br><b style="color:red">Внимание: текущие данные будут заменены!</b></p>
+                    <p>Загрузите ранее сохраненный файл. <br><b style="color:red">Внимание: текущие данные будут
+                            заменены!</b></p>
                     <input type="file" id="import-file" style="display: none;" accept=".json">
                     <button id="import-trigger-btn" class="action-btn import-color">Загрузить базу</button>
                 </div>
@@ -102,12 +106,139 @@
     </main>
 
     <!-- МОДАЛЬНЫЕ ОКНА -->
-    <div id="eventSelectionModal" class="modal-overlay"><div class="modal-content"><span class="close-modal-btn">&times;</span><h2 id="selection-modal-title">События на <span id="selection-modal-date"></span></h2><div id="existing-events-list"></div><div class="button-container"><button id="select-match-btn">⚽ Матч</button><button id="select-training-btn">🏋️ Тренировка</button><button id="select-meeting-btn">📅 Встреча</button></div></div></div>
-    <div id="addMatchModal" class="modal-overlay"><div class="modal-content"><span class="close-modal-btn">&times;</span><h2 id="match-modal-title">Матч <small id="match-modal-date"></small></h2><form id="add-match-form"><input type="hidden" id="match-date"><input type="hidden" id="match-event-id"><div class="form-row"><div style="flex:1"><label>Время:</label><input type="time" id="match-time" required></div><div style="flex:2"><label>Соперник:</label><input type="text" id="match-opponent" required></div></div><label>Счет:</label><div class="score-inputs"><input type="number" id="home-score" min="0"><span>:</span><input type="number" id="away-score" min="0"></div><div class="match-details-section"><h3>Детали</h3><div class="detail-control"><label>⚽ Голы:</label><div class="picker-row"><select id="goal-select"></select><button type="button" class="add-mini-btn" id="add-goal-btn">+</button></div><div id="goal-list" class="added-items-list"></div></div><div class="detail-control"><label>🟨 Желтые:</label><div class="picker-row"><select id="yellow-select"></select><button type="button" class="add-mini-btn" id="add-yellow-btn">+</button></div><div id="yellow-list" class="added-items-list"></div></div><div class="detail-control"><label>🟥 Красные:</label><div class="picker-row"><select id="red-select"></select><button type="button" class="add-mini-btn" id="add-red-btn">+</button></div><div id="red-list" class="added-items-list"></div></div></div><button type="submit">Сохранить</button></form></div></div>
-    <div id="addTrainingModal" class="modal-overlay"><div class="modal-content"><span class="close-modal-btn">&times;</span><h2 id="training-modal-title">Тренировка <small id="training-modal-date"></small></h2><form id="add-training-form"><input type="hidden" id="training-date"><input type="hidden" id="training-event-id"><label>Время:</label><input type="time" id="training-time" required><label>Описание:</label><input type="text" id="training-description" required><button type="submit">Сохранить</button></form></div></div>
-    <div id="addMeetingModal" class="modal-overlay"><div class="modal-content"><span class="close-modal-btn">&times;</span><h2 id="meeting-modal-title">Встреча <small id="meeting-modal-date"></small></h2><form id="add-meeting-form"><input type="hidden" id="meeting-date"><input type="hidden" id="meeting-event-id"><label>Время:</label><input type="time" id="meeting-time" required><label>С кем:</label><input type="text" id="meeting-opponent" required><button type="submit">Сохранить</button></form></div></div>
-    <div id="playerModal" class="modal-overlay"><div class="modal-content"><span class="close-modal-btn" id="close-player-modal">&times;</span><h2 id="player-modal-title">Игрок</h2><form id="add-edit-player-form"><input type="hidden" id="player-id"><label>ФИО:</label><input type="text" id="player-name" required><label>Позиция:</label><select id="player-pos" required><option>Вратарь</option><option>Защитник</option><option>Полузащитник</option><option>Нападающий</option></select><div class="form-row"><div style="flex:1"><label>Рост:</label><input type="number" id="player-height"></div><div style="flex:1"><label>Вес:</label><input type="number" id="player-weight"></div></div><label>Статус:</label><select id="player-status" required><option>Здоров</option><option>Травма</option><option>Болен</option><option>Дисквалификация</option></select><button type="submit">Сохранить</button></form></div></div>
+    <div id="eventSelectionModal" class="modal-overlay">
+        <div class="modal-content"><span class="close-modal-btn">&times;</span>
+            <h2 id="selection-modal-title">События на <span id="selection-modal-date"></span></h2>
+            <div id="existing-events-list"></div>
+            <div class="button-container"><button id="select-match-btn">⚽ Матч</button><button
+                    id="select-training-btn">🏋️ Тренировка</button><button id="select-meeting-btn">📅 Встреча</button>
+            </div>
+        </div>
+    </div>
+    <div id="addMatchModal" class="modal-overlay">
+        <div class="modal-content"><span class="close-modal-btn">&times;</span>
+            <h2 id="match-modal-title">Матч <small id="match-modal-date"></small></h2>
+            <form id="add-match-form"><input type="hidden" id="match-date"><input type="hidden" id="match-event-id">
+                <div class="form-row">
+                    <div style="flex:1"><label>Время:</label><input type="time" id="match-time" required></div>
+                    <div style="flex:2"><label>Соперник:</label><input type="text" id="match-opponent" required></div>
+                </div><label>Счет:</label>
+                <div class="score-inputs"><input type="number" id="home-score" min="0"><span>:</span><input
+                        type="number" id="away-score" min="0"></div>
+                <div class="match-details-section">
+                    <h3>Детали</h3>
+                    <div class="detail-control"><label>⚽ Голы:</label>
+                        <div class="picker-row"><select id="goal-select"></select><button type="button"
+                                class="add-mini-btn" id="add-goal-btn">+</button></div>
+                        <div id="goal-list" class="added-items-list"></div>
+                    </div>
+                    <div class="detail-control"><label>🟨 Желтые:</label>
+                        <div class="picker-row"><select id="yellow-select"></select><button type="button"
+                                class="add-mini-btn" id="add-yellow-btn">+</button></div>
+                        <div id="yellow-list" class="added-items-list"></div>
+                    </div>
+                    <div class="detail-control"><label>🟥 Красные:</label>
+                        <div class="picker-row"><select id="red-select"></select><button type="button"
+                                class="add-mini-btn" id="add-red-btn">+</button></div>
+                        <div id="red-list" class="added-items-list"></div>
+                    </div>
+                </div><button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+    <div id="addTrainingModal" class="modal-overlay">
+        <div class="modal-content"><span class="close-modal-btn">&times;</span>
+            <h2 id="training-modal-title">Тренировка <small id="training-modal-date"></small></h2>
+            <form id="add-training-form"><input type="hidden" id="training-date"><input type="hidden"
+                    id="training-event-id"><label>Время:</label><input type="time" id="training-time"
+                    required><label>Описание:</label><input type="text" id="training-description" required><button
+                    type="submit">Сохранить</button></form>
+        </div>
+    </div>
+    <div id="addMeetingModal" class="modal-overlay">
+        <div class="modal-content"><span class="close-modal-btn">&times;</span>
+            <h2 id="meeting-modal-title">Встреча <small id="meeting-modal-date"></small></h2>
+            <form id="add-meeting-form"><input type="hidden" id="meeting-date"><input type="hidden"
+                    id="meeting-event-id"><label>Время:</label><input type="time" id="meeting-time" required><label>С
+                    кем:</label><input type="text" id="meeting-opponent" required><button
+                    type="submit">Сохранить</button></form>
+        </div>
+    </div>
+    <div id="playerModal" class="modal-overlay">
+        <div class="modal-content"><span class="close-modal-btn" id="close-player-modal">&times;</span>
+            <h2 id="player-modal-title">Игрок</h2>
+            <form id="add-edit-player-form">
+                <input type="hidden" id="player-id">
+
+                <div class="form-row" style="align-items: center; justify-content: center; margin-bottom: 15px;">
+                    <div class="player-photo-upload" id="player-photo-preview"
+                        onclick="document.getElementById('player-photo-url').focus()">
+                        <span>📷</span>
+                    </div>
+                </div>
+                <label>Ссылка на фото (URL):</label>
+                <input type="text" id="player-photo-url" placeholder="https://example.com/photo.jpg"
+                    onchange="updatePhotoPreview(this.value)">
+
+                <label>ФИО:</label>
+                <input type="text" id="player-name" required>
+
+                <div class="form-row">
+                    <div style="flex:1">
+                        <label>Позиция:</label>
+                        <select id="player-pos" required>
+                            <option>Вратарь</option>
+                            <option>Защитник</option>
+                            <option>Полузащитник</option>
+                            <option>Нападающий</option>
+                        </select>
+                    </div>
+                    <div style="flex:1">
+                        <label>Статус:</label>
+                        <select id="player-status" required>
+                            <option>Здоров</option>
+                            <option>Травма</option>
+                            <option>Болен</option>
+                            <option>Дисквалификация</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div style="flex:1"><label>Дата рожд.:</label><input type="date" id="player-dob"></div>
+                    <div style="flex:1"><label>Телефон:</label><input type="text" id="player-phone" placeholder="+7...">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div style="flex:1"><label>Рост (см):</label><input type="number" id="player-height"></div>
+                    <div style="flex:1"><label>Вес (кг):</label><input type="number" id="player-weight"></div>
+                </div>
+
+                <label>Заметки / Травмы:</label>
+                <textarea id="player-notes" rows="3"
+                    style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; width: 100%; font-family: inherit; resize: vertical;"></textarea>
+
+                <button type="submit">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div id="confirmModal" class="modal-overlay" style="z-index: 10000;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h2 style="margin-bottom: 10px;">Вы уверены?</h2>
+            <p id="confirm-message" style="color: var(--text-secondary); margin-bottom: 25px;">Это действие нельзя будет
+                отменить.</p>
+            <div class="form-row">
+                <button id="confirm-cancel-btn" class="action-btn"
+                    style="background: rgba(255,255,255,0.1); color: #fff;">Отмена</button>
+                <button id="confirm-ok-btn" class="action-btn danger-btn-large">Да, удалить</button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
