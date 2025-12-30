@@ -4,108 +4,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Помощник Тренера Pro</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Golo - Coach Assistant</title>
+    <!-- Библиотека для скриншотов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css?v=fix_scroll_drag">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
+    <!-- ЗАСТАВКА -->
+    <div id="intro-overlay">
+        <div class="intro-scene">
+            <div class="logo-reveal-container">
+                <div class="main-letters">
+                    <span class="brand-letter letter-g">G</span>
+                    <span class="brand-letter letter-o1">O</span>
+                    <span class="brand-letter letter-l">L</span>
+                    <span class="brand-letter letter-o2">O</span>
+                </div>
+                <div class="intro-tagline">Coach Assistant</div>
+            </div>
+            <div class="intro-progress-container">
+                <div class="intro-progress-bar"></div>
+            </div>
+        </div>
+    </div>
 
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#overview" class="nav-link active">Аналитика</a></li>
-                <li><a href="#players" class="nav-link">Игроки</a></li>
-                <li><a href="#matches" class="nav-link">Матчи</a></li>
-                <li><a href="#tactics" class="nav-link">Тактика</a></li>
-                <li><a href="#calendar" class="nav-link">Календарь</a></li>
-                <li><a href="#settings" class="nav-link">⚙️ Настройки</a></li>
+    <div id="app-container">
+        <!-- МЕНЮ -->
+        <nav id="sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-animated-logo">
+                    <span class="sidebar-letter letter-g">G</span>
+                    <span class="sidebar-letter letter-o1">O</span>
+                    <span class="sidebar-letter letter-l">L</span>
+                    <span class="sidebar-letter letter-o2">O</span>
+                </div>
+                <div class="logo-tagline">Coach Assistant</div>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="#overview" class="nav-link active">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 3v18h18" />
+                                <path d="m19 9-5 5-4-4-3 3" />
+                            </svg></span>
+                        <span class="nav-text">Аналитика</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#players" class="nav-link">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></span>
+                        <span class="nav-text">Игроки</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#matches" class="nav-link">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 17l-4.5-2.5V9.5L12 7l4.5 2.5v5L12 17z"></path>
+                                <path d="M12 7V3"></path>
+                                <path d="M7.5 9.5L4 7"></path>
+                                <path d="M16.5 9.5L20 7"></path>
+                                <path d="M7.5 14.5L4 17"></path>
+                                <path d="M16.5 14.5L20 17"></path>
+                            </svg></span>
+                        <span class="nav-text">Матчи</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#tactics" class="nav-link">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M3 12h18" />
+                                <path d="M12 3v18" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg></span>
+                        <span class="nav-text">Тактика</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#calendar" class="nav-link">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                <path d="M16 2v4" />
+                                <path d="M8 2v4" />
+                                <path d="M3 10h18" />
+                            </svg></span>
+                        <span class="nav-text">Календарь</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg></span>
+                        <span class="nav-text">Настройки</span>
+                    </a>
+                </li>
             </ul>
         </nav>
-    </header>
 
-    <main>
-        <!-- АНАЛИТИКА (Обзор) -->
-        <section id="overview" class="page-section active-section">
-            <h1>Аналитика команды</h1>
-            <div id="analytics-dashboard-container"></div>
-        </section>
+        <main id="main-content">
+            <!-- 1. АНАЛИТИКА -->
+            <section id="overview" class="page-section active-section">
+                <h1>Аналитика команды</h1>
+                <div id="analytics-dashboard-container"></div>
+            </section>
 
-        <!-- ИГРОКИ -->
-        <section id="players" class="page-section">
-            <h1>Состав и Статистика</h1>
-            <button id="add-player-btn"><span>+</span> Добавить игрока</button>
-            <div id="players-list-container"></div>
-        </section>
+            <!-- 2. ИГРОКИ -->
+            <section id="players" class="page-section">
+                <h1>Состав и Статистика</h1>
+                <button id="add-player-btn"><span>+</span> Добавить игрока</button>
+                <div id="players-list-container"></div>
+            </section>
 
-        <!-- МАТЧИ -->
-        <section id="matches" class="page-section">
-            <h1>История матчей</h1>
-            <div id="matches-list-container"></div>
-        </section>
+            <!-- 3. МАТЧИ -->
+            <section id="matches" class="page-section">
+                <h1>История матчей</h1>
+                <div id="matches-list-container"></div>
+            </section>
 
-        <!-- ТАКТИКА -->
-        <section id="tactics" class="page-section full-height-section">
-            <div class="tactics-header">
-                <h1>Тактическая доска</h1>
-                <div class="tactics-controls">
-                    <button id="add-opponent-btn" class="opponent-btn">+ Соперник</button>
-                    <button id="reset-tactics-btn" class="danger-btn">Сброс</button>
-                </div>
-            </div>
-            <div class="tactics-container">
-                <div class="bench-column">
-                    <h3>Состав</h3>
-                    <div id="tactics-bench" class="bench-list"></div>
-                </div>
-                <div class="field-column">
-                    <div id="football-field" class="football-field">
-                        <div class="center-line"></div>
-                        <div class="field-circle"></div>
-                        <div class="penalty-area top"></div>
-                        <div class="penalty-area bottom"></div>
-                        <div class="goal-area top"></div>
-                        <div class="goal-area bottom"></div>
-                        <div id="field-players-layer"></div>
+            <!-- 4. ТАКТИКА -->
+            <section id="tactics" class="page-section full-height-section">
+                <div class="tactics-header">
+                    <h1>Тактическая доска</h1>
+                    <div class="tactics-toolbar">
+                        <div class="tactics-presets">
+                            <select id="tactics-select">
+                                <option value="">-- Выберите схему --</option>
+                            </select>
+                            <input type="text" id="tactic-name-input" placeholder="Название (напр. 4-4-2)">
+                            <button id="save-tactic-btn" class="icon-btn" title="Сохранить схему">💾</button>
+                            <button id="delete-tactic-btn" class="icon-btn delete" title="Удалить схему">🗑️</button>
+                        </div>
+                        <div class="tactics-actions">
+                            <button id="download-tactic-btn" class="tactic-tool-btn photo-btn">📸 Фото</button>
+                            <button id="add-opponent-btn" class="tactic-tool-btn opponent-btn">+ Соперник</button>
+                            <button id="reset-tactics-btn" class="tactic-tool-btn danger-btn">Сброс</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- КАЛЕНДАРЬ -->
-        <section id="calendar" class="page-section">
-            <h1>Календарь событий</h1>
-            <div id="calendar-container"></div>
-        </section>
-
-        <!-- НАСТРОЙКИ -->
-        <section id="settings" class="page-section">
-            <h1>Управление данными</h1>
-            <div class="settings-container">
-                <div class="setting-card">
-                    <h3>📥 Экспорт</h3>
-                    <p>Скачайте файл с базой данных, чтобы не потерять информацию или перенести её на другое устройство.
-                    </p>
-                    <button id="export-btn" class="action-btn export-color">Скачать базу данных</button>
+                <div class="tactics-container">
+                    <div class="bench-column">
+                        <h3>Состав</h3>
+                        <div id="tactics-bench" class="bench-list"></div>
+                    </div>
+                    <div class="field-column">
+                        <div id="football-field" class="football-field">
+                            <div class="center-line"></div>
+                            <div class="field-circle"></div>
+                            <div class="penalty-area top"></div>
+                            <div class="penalty-area bottom"></div>
+                            <div class="goal-area top"></div>
+                            <div class="goal-area bottom"></div>
+                            <div id="field-players-layer"></div>
+                        </div>
+                    </div>
                 </div>
+            </section>
 
-                <div class="setting-card">
-                    <h3>📤 Импорт</h3>
-                    <p>Загрузите ранее сохраненный файл. <br><b style="color:red">Внимание: текущие данные будут
-                            заменены!</b></p>
-                    <input type="file" id="import-file" style="display: none;" accept=".json">
-                    <button id="import-trigger-btn" class="action-btn import-color">Загрузить базу</button>
+            <!-- 5. КАЛЕНДАРЬ -->
+            <section id="calendar" class="page-section">
+                <h1>Календарь событий</h1>
+                <div id="calendar-container"></div>
+            </section>
+
+            <!-- 6. НАСТРОЙКИ -->
+            <section id="settings" class="page-section">
+                <h1>Управление данными</h1>
+                <div class="settings-container">
+                    <div class="setting-card">
+                        <h3>📥 Экспорт</h3>
+                        <p>Скачайте файл с базой данных.</p>
+                        <button id="export-btn" class="action-btn export-color">Скачать базу данных</button>
+                    </div>
+                    <div class="setting-card">
+                        <h3>📤 Импорт</h3>
+                        <p>Загрузите ранее сохраненный файл. <br><b style="color:red">Данные будут заменены!</b></p>
+                        <input type="file" id="import-file" style="display: none;" accept=".json">
+                        <button id="import-trigger-btn" class="action-btn import-color">Загрузить базу</button>
+                    </div>
+                    <div class="setting-card">
+                        <h3>🗑️ Сброс</h3>
+                        <p>Полное удаление всех данных.</p>
+                        <button id="clear-all-btn" class="action-btn danger-btn-large">Удалить всё</button>
+                    </div>
                 </div>
+            </section>
+        </main>
+    </div>
 
-                <div class="setting-card">
-                    <h3>🗑️ Сброс</h3>
-                    <p>Полное удаление всех данных приложения. Начните с чистого листа.</p>
-                    <button id="clear-all-btn" class="action-btn danger-btn-large">Удалить всё</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <!-- МОДАЛКИ (Без изменений структуры) -->
     <div id="eventSelectionModal" class="modal-overlay">
         <div class="modal-content"><span class="close-modal-btn">&times;</span>
             <h2 id="selection-modal-title">События на <span id="selection-modal-date"></span></h2>
@@ -117,14 +217,26 @@
     </div>
     <div id="addMatchModal" class="modal-overlay">
         <div class="modal-content"><span class="close-modal-btn">&times;</span>
-            <h2 id="match-modal-title">Матч <small id="match-modal-date"></small></h2>
+            <h2 id="match-modal-title">Матч</h2>
             <form id="add-match-form"><input type="hidden" id="match-date"><input type="hidden" id="match-event-id">
                 <div class="form-row">
                     <div style="flex:1"><label>Время:</label><input type="time" id="match-time" required></div>
                     <div style="flex:2"><label>Соперник:</label><input type="text" id="match-opponent" required></div>
-                </div><label>Счет:</label>
-                <div class="score-inputs"><input type="number" id="home-score" min="0"><span>:</span><input
-                        type="number" id="away-score" min="0"></div>
+                    <div
+                        style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;">
+                        <label style="font-size:0.8rem;margin-bottom:8px">Завершен</label><input type="checkbox"
+                            id="match-played" checked style="width:20px;height:20px;"></div>
+                </div>
+                <div class="form-row" style="align-items:flex-end;">
+                    <div style="flex:0 0 auto;"><label>Счет:</label>
+                        <div class="score-inputs"><input type="number" id="home-score" min="0"
+                                style="width:60px"><span>:</span><input type="number" id="away-score" min="0"
+                                style="width:60px"></div>
+                    </div>
+                    <div style="flex:1"><label>⭐️ MVP:</label><select id="match-mvp" style="height:55px;">
+                            <option value="">Не выбрано</option>
+                        </select></div>
+                </div>
                 <div class="match-details-section">
                     <h3>Детали</h3>
                     <div class="detail-control"><label>⚽ Голы:</label>
@@ -142,103 +254,82 @@
                                 class="add-mini-btn" id="add-red-btn">+</button></div>
                         <div id="red-list" class="added-items-list"></div>
                     </div>
-                </div><button type="submit">Сохранить</button>
+                </div>
+                <div class="modal-footer"><button type="submit" class="save-btn" id="save-match-btn">Сохранить</button>
+                </div>
             </form>
         </div>
     </div>
     <div id="addTrainingModal" class="modal-overlay">
         <div class="modal-content"><span class="close-modal-btn">&times;</span>
-            <h2 id="training-modal-title">Тренировка <small id="training-modal-date"></small></h2>
+            <h2 id="training-modal-title">Тренировка</h2>
             <form id="add-training-form"><input type="hidden" id="training-date"><input type="hidden"
                     id="training-event-id"><label>Время:</label><input type="time" id="training-time"
-                    required><label>Описание:</label><input type="text" id="training-description" required><button
-                    type="submit">Сохранить</button></form>
+                    required><label>Описание:</label><input type="text" id="training-description" required>
+                <div class="modal-footer"><button type="submit" class="save-btn"
+                        id="save-training-btn">Сохранить</button></div>
+            </form>
         </div>
     </div>
     <div id="addMeetingModal" class="modal-overlay">
         <div class="modal-content"><span class="close-modal-btn">&times;</span>
-            <h2 id="meeting-modal-title">Встреча <small id="meeting-modal-date"></small></h2>
+            <h2 id="meeting-modal-title">Встреча</h2>
             <form id="add-meeting-form"><input type="hidden" id="meeting-date"><input type="hidden"
                     id="meeting-event-id"><label>Время:</label><input type="time" id="meeting-time" required><label>С
-                    кем:</label><input type="text" id="meeting-opponent" required><button
-                    type="submit">Сохранить</button></form>
+                    кем:</label><input type="text" id="meeting-opponent" required>
+                <div class="modal-footer"><button type="submit" class="save-btn"
+                        id="save-meeting-btn">Сохранить</button></div>
+            </form>
         </div>
     </div>
     <div id="playerModal" class="modal-overlay">
         <div class="modal-content"><span class="close-modal-btn" id="close-player-modal">&times;</span>
             <h2 id="player-modal-title">Игрок</h2>
-            <form id="add-edit-player-form">
-                <input type="hidden" id="player-id">
-
-                <div class="form-row" style="align-items: center; justify-content: center; margin-bottom: 15px;">
+            <form id="add-edit-player-form"><input type="hidden" id="player-id">
+                <div class="form-row" style="justify-content:center;margin-bottom:15px;">
                     <div class="player-photo-upload" id="player-photo-preview"
-                        onclick="document.getElementById('player-photo-url').focus()">
-                        <span>📷</span>
-                    </div>
-                </div>
-                <label>Ссылка на фото (URL):</label>
-                <input type="text" id="player-photo-url" placeholder="https://example.com/photo.jpg"
-                    onchange="updatePhotoPreview(this.value)">
-
-                <label>ФИО:</label>
-                <input type="text" id="player-name" required>
-
+                        onclick="document.getElementById('player-photo-url').focus()"><span>📷</span></div>
+                </div><label>Фото (URL):</label><input type="text" id="player-photo-url"
+                    onchange="updatePhotoPreview(this.value)"><label>ФИО:</label><input type="text" id="player-name"
+                    required>
                 <div class="form-row">
-                    <div style="flex:1">
-                        <label>Позиция:</label>
-                        <select id="player-pos" required>
+                    <div style="flex:1"><label>Позиция:</label><select id="player-pos" required>
                             <option>Вратарь</option>
                             <option>Защитник</option>
                             <option>Полузащитник</option>
                             <option>Нападающий</option>
-                        </select>
-                    </div>
-                    <div style="flex:1">
-                        <label>Статус:</label>
-                        <select id="player-status" required>
+                        </select></div>
+                    <div style="flex:1"><label>Статус:</label><select id="player-status" required>
                             <option>Здоров</option>
                             <option>Травма</option>
                             <option>Болен</option>
                             <option>Дисквалификация</option>
-                        </select>
-                    </div>
+                        </select></div>
                 </div>
-
                 <div class="form-row">
                     <div style="flex:1"><label>Дата рожд.:</label><input type="date" id="player-dob"></div>
-                    <div style="flex:1"><label>Телефон:</label><input type="text" id="player-phone" placeholder="+7...">
-                    </div>
+                    <div style="flex:1"><label>Телефон:</label><input type="text" id="player-phone"></div>
                 </div>
-
                 <div class="form-row">
-                    <div style="flex:1"><label>Рост (см):</label><input type="number" id="player-height"></div>
-                    <div style="flex:1"><label>Вес (кг):</label><input type="number" id="player-weight"></div>
-                </div>
-
-                <label>Заметки / Травмы:</label>
-                <textarea id="player-notes" rows="3"
-                    style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; width: 100%; font-family: inherit; resize: vertical;"></textarea>
-
-                <button type="submit">Сохранить</button>
+                    <div style="flex:1"><label>Рост:</label><input type="number" id="player-height"></div>
+                    <div style="flex:1"><label>Вес:</label><input type="number" id="player-weight"></div>
+                </div><label>Заметки:</label><textarea id="player-notes" rows="3"
+                    style="background:rgba(255,255,255,0.05);border:1px solid #eee;color:#000;padding:12px;border-radius:12px;width:100%;resize:vertical;"></textarea><button
+                    type="submit">Сохранить</button>
             </form>
         </div>
     </div>
-
-    <!-- CUSTOM CONFIRM MODAL -->
-    <div id="confirmModal" class="modal-overlay" style="z-index: 10000;">
-        <div class="modal-content" style="max-width: 400px; text-align: center;">
-            <h2 style="margin-bottom: 10px;">Вы уверены?</h2>
-            <p id="confirm-message" style="color: var(--text-secondary); margin-bottom: 25px;">Это действие нельзя будет
-                отменить.</p>
-            <div class="form-row">
-                <button id="confirm-cancel-btn" class="action-btn"
-                    style="background: rgba(255,255,255,0.1); color: #fff;">Отмена</button>
-                <button id="confirm-ok-btn" class="action-btn danger-btn-large">Да, удалить</button>
-            </div>
+    <div id="confirmModal" class="modal-overlay" style="z-index:10000;">
+        <div class="modal-content" style="max-width:400px;text-align:center;">
+            <h2 style="margin-bottom:10px;">Вы уверены?</h2>
+            <p id="confirm-message" style="color:var(--text-secondary);margin-bottom:25px;"></p>
+            <div class="form-row"><button id="confirm-cancel-btn" class="action-btn"
+                    style="background:rgba(0,0,0,0.1);color:#000;">Отмена</button><button id="confirm-ok-btn"
+                    class="action-btn danger-btn-large">Да, удалить</button></div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=fix_scroll_drag"></script>
 </body>
 
 </html>
